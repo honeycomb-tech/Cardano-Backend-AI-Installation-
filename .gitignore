@@ -1,0 +1,4 @@
+# Exclude large genesis files - clients download these themselves
+scripts/dolos-stack/dolos/*.json
+scripts/dolos-stack/dolos/data/
+scripts/guild-stack/cardano-node-guild/
