@@ -84,7 +84,7 @@ chmod +x scripts/dolos-stack/start-full-stack.sh
 ./scripts/dolos-stack/start-full-stack.sh
 ```
 
-**Expected Timeline**: 2-3 hours for full sync
+**Expected Timeline**: ~1 hour (50min snapshot download + sync to tip)
 
 ### Option 2: Guild Operators Stack (Recommended for Production)
 

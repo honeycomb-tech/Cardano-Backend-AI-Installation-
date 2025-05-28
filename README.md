@@ -94,9 +94,9 @@ Once everything is set up correctly, you can restart your chosen stack anytime w
 |---------|-------------|----------------------|
 | **Node Type** | Modern Rust | Traditional Haskell |
 | **Current Status** | ⚠️ Waiting for Ouroboros | ✅ Fully Functional |
-| **Initial Sync** | Chain-sync from genesis | Mithril snapshot (faster) |
+| **Initial Sync** | Snapshot + sync to tip | Mithril snapshot (faster) |
 | **Memory Usage** | Lower (~4GB) | Higher (~6-8GB) |
-| **Sync Time** | 2-3 days | 2-4 hours |
+| **Sync Time** | ~1 hour (50min snapshot + sync) | 2-4 hours |
 | **Tools** | Basic monitoring | Rich ecosystem (gLiveView, CNTools) |
 | **SPO Adoption** | Growing | Widespread |
 | **Production Ready** | ⚠️ Limited | ✅ Battle-tested |
@@ -106,32 +106,75 @@ Once everything is set up correctly, you can restart your chosen stack anytime w
 
 ## 🏛️ Architecture
 
+### Dolos Stack Architecture
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Cardano Backend Stack                    │
+│                    Dolos Backend Stack                      │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
-│  │  Supabase   │    │    Node     │    │    Carp     │     │
-│  │ (Database)  │◄───┤ (Dolos/Guild)├───►│  (Indexer)  │     │
+│  │  Supabase   │    │    Dolos    │    │    Carp     │     │
+│  │ (Database)  │◄───┤   (Node)    │───►│  (Indexer)  │     │
 │  │             │    │             │    │             │     │
 │  └─────────────┘    └─────────────┘    └─────────────┘     │
 │       │                    │                    │          │
-│   PostgreSQL           Socket IPC          Blockchain       │
-│   Port: 5432          Port: 6000/50051    Processing       │
+│   Port: 8000           Port: 18000         Socket IPC      │
+│   (REST API)          (gRPC, miniBF,      (Blockchain       │
+│   (GraphQL)            REST, etc.)         Processing)     │
+│                                                             │
+│  🔌 Access Points:                                          │
+│  • Supabase API: http://localhost:8000                     │
+│  • Dolos gRPC: http://localhost:50051                      │
+│  • Dolos REST: http://localhost:18000                      │
+│  • Dolos miniBF: http://localhost:18000/miniprotocols      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Guild Operators Stack Architecture
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Guild Operators Stack                      │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐     │
+│  │  Supabase   │    │   Guild     │    │    Carp     │     │
+│  │ (Database)  │◄───┤   Node      │───►│  (Indexer)  │     │
+│  │             │    │             │    │             │     │
+│  └─────────────┘    └─────────────┘    └─────────────┘     │
+│       │                    │                    │          │
+│   Port: 8000           Socket Only         Socket IPC      │
+│   (REST API)          (No direct API)     (Blockchain       │
+│   (GraphQL)           + Monitoring         Processing)     │
+│                                                             │
+│  🔌 Access Points:                                          │
+│  • Supabase API: http://localhost:8000                     │
+│  • Prometheus: http://localhost:12798/metrics              │
+│  • EKG Stats: http://localhost:12781                       │
+│  • Node Socket: /socket/node.socket (IPC only)             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ## 🔌 Services & Ports
 
-### Dolos Stack
-- **Dolos Node**: 50051 (gRPC), 3000 (API), 18000 (TRP)
-- **Supabase**: 8000 (API), 8443 (Auth), 5432 (DB)
-- **Carp**: Internal indexing
+### Dolos Stack (Rich API Access)
+- **Dolos Node**: 
+  - 50051 (gRPC API) - Direct blockchain queries
+  - 18000 (REST API) - HTTP blockchain access  
+  - 18000/miniprotocols (miniBF) - Mini-protocol access
+  - 3000 (Admin API) - Node management
+- **Supabase**: 8000 (REST/GraphQL API), 8443 (Auth), 5432 (DB)
+- **Carp**: Internal indexing to PostgreSQL
 
-### Guild Stack  
-- **Guild Node**: 6000 (P2P), 12798 (Prometheus), 12781 (EKG)
-- **Supabase**: 8000 (API), 8443 (Auth), 5432 (DB)
-- **Carp**: Internal indexing
+**🎯 Developer Access**: Multiple API options for blockchain data
+
+### Guild Stack (Monitoring Focus)
+- **Guild Node**: 
+  - 6000 (P2P networking) - Cardano network communication
+  - 12798 (Prometheus) - Metrics and monitoring
+  - 12781 (EKG) - Real-time statistics
+  - Socket only - No direct API access
+- **Supabase**: 8000 (REST/GraphQL API), 8443 (Auth), 5432 (DB)  
+- **Carp**: Internal indexing to PostgreSQL
+
+**🎯 Developer Access**: Supabase API only (blockchain data via Carp indexing)
 
 ## 📁 Project Structure
 
