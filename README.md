@@ -94,9 +94,9 @@ Once everything is set up correctly, you can restart your chosen stack anytime w
 |---------|-------------|----------------------|
 | **Node Type** | Modern Rust | Traditional Haskell |
 | **Current Status** | ⚠️ Waiting for Ouroboros | ✅ Fully Functional |
-| **Initial Sync** | Snapshot + sync to tip | Mithril snapshot (faster) |
+| **Initial Sync** | Dolos Snapshot | Mithril snapshot |
 | **Memory Usage** | Lower (~4GB) | Higher (~6-8GB) |
-| **Sync Time** | ~1 hour (50min snapshot + sync) | 2-4 hours |
+| **Sync Time** | ~1 hour | 2-4 hours |
 | **Tools** | Basic monitoring | Rich ecosystem (gLiveView, CNTools) |
 | **SPO Adoption** | Growing | Widespread |
 | **Production Ready** | ⚠️ Limited | ✅ Battle-tested |
