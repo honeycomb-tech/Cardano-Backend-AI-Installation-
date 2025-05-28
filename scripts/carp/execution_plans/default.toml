@@ -1,0 +1,60 @@
+
+[GenesisBlockTask]
+include_payload = false
+
+[GenesisTransactionTask]
+include_payload = true
+
+[ByronBlockTask]
+readonly = false
+include_payload = false
+
+[ByronTransactionTask]
+readonly = false
+include_payload = true
+
+[ByronAddressTask]
+
+[ByronOutputTask]
+
+[ByronInputTask]
+
+[MultieraBlockTask]
+readonly = false
+include_payload = false
+
+[MultieraTransactionTask]
+include_payload = true
+readonly = false
+
+[MultieraMetadataTask]
+readonly = false
+
+[MultieraAddressTask]
+
+[MultieraOutputTask]
+readonly = false
+
+[MultieraReferenceInputTask]
+readonly = false
+
+[MultieraUsedInputTask]
+readonly = false
+
+[MultieraUnusedInputTask]
+
+[MultieraStakeCredentialTask]
+
+[MultieraAddressCredentialRelationTask]
+readonly = false
+
+[MultieraTxCredentialRelationTask]
+
+[MultieraAssetMintTask]
+readonly = false
+
+[MultieraCip25EntryTask]
+
+[MultieraAddressDelegationTask]
+
+[MultieraAssetUtxos]

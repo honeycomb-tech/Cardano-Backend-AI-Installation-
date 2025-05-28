@@ -1,0 +1,13 @@
+source:
+  type: oura
+  socket: "/app/dolos.socket.sock"
+  bearer: Unix
+
+sink:
+  type: cardano
+  db:
+    type: postgres
+    database_url: postgresql://postgres:fQpUUR6Azw1eJcjktNMfYHxPnzYADauVJEyxKWMVYic=@supabase-db:5432/honeycombdb
+  network: mainnet
+
+start_block: 
